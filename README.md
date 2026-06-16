@@ -1,163 +1,118 @@
 # osu!mania Skill Analyzer v1.0.0
 
-osu!mania Skill Analyzer is a Windows desktop replay analyzer for osu!mania. It reads an `.osr` replay file and the matching `.osu` beatmap file, then visualizes player mistake tendencies by lane, key, finger, timing, and beatmap characteristics.
+osu!maniaのリプレイ（.osr）と譜面ファイル（.osu）を解析し、プレイヤーの入力傾向・ミス傾向・譜面適性を可視化する分析ツールです。
 
-This tool is for practice support and tendency analysis. It is not an official osu! judgement reproduction tool.
+公式のスコアやPPだけでは分からない、
 
-## App Overview
+* どの指でミスしやすいのか
+* 左右どちらが弱いのか
+* LN（Long Note）が得意か苦手か
+* Jack配置への適性はあるか
+* 高密度地帯で崩れやすいか
+* 後半で体力切れを起こしているか
 
-v1.0.0 focuses on Replay File Analysis:
+といった情報を分析できます。
 
-- Load `.osr` replay files
-- Load matching `.osu` beatmap files
-- Compare OSR Miss and Analyzer Miss
-- Build a Player Profile from up to 5 replays
-- Show normalized skill tendencies using beatmap exposure
+---
 
-CSV import and real-time input logging are intentionally hidden in v1.0.0. They are planned for later versions.
+## 主な機能
 
-## Main Features
+### 単体リプレイ解析
 
-- Single replay analysis
-- Multi replay analysis, up to 5 `.osr + .osu` sets
-- OSR Miss / Analyzer Miss / Difference comparison
-- Lane, key, and finger error breakdown
-- Tap / LN / Early / Late / Overhit breakdown
-- LN start / release / hold-break estimation
-- Beatmap Profile display
-- Beatmap-aware normalized Player Profile
-- Strengths TOP3 and challenge candidates
-- Japanese / English UI switching
-- Developer Tools with replay and analysis debug details
+* .osr リプレイ読み込み
+* .osu 譜面読み込み
+* Analyzer Miss計測
+* 指別ミス分析
+* 左右バランス分析
+* エラー内訳表示
 
-## How To Use
+### 複数リプレイ統合解析
 
-### Development Run
+* 最大5譜面を同時解析
+* プレイヤープロファイル生成
+* 指別傾向集計
+* LN適性分析
+* Jack適性分析
+* 高密度耐性分析
+* 後半耐久分析
+* 譜面特性を考慮した正規化評価
 
-Install dependencies once:
-
-```powershell
-npm install
-```
-
-Start the Electron app:
-
-```powershell
-npm start
-```
-
-### Build Windows Portable EXE
-
-```powershell
-npm run build
-```
-
-The portable executable is generated in `dist/`.
-
-## Loading .osr / .osu Files
-
-1. Select a replay file in `.osr replay`.
-2. Select the matching beatmap file in `.osu beatmap`.
-3. Click `Analyze` / `解析する`.
-4. Check OSR Miss, Analyzer Miss, Difference, and detailed error breakdowns.
-
-The `.osr` and `.osu` files must correspond to the same play. If they do not match, the analyzer result will not be reliable.
-
-## Single Replay Analysis
-
-Single analysis is useful when checking one play in detail.
-
-Main outputs:
-
-- OSR Miss
-- Analyzer Miss
-- Difference
-- Hit count
-- Input count
-- Mistake type breakdown
-- Lane error breakdown
-- Key error breakdown
-- Finger error breakdown
-- Replay playback timeline
-- Practice advice
-
-Use `Reset analysis` / `解析結果をリセット` to clear the current single analysis state.
-
-## Multi Replay Analysis
-
-Multi replay analysis supports up to 5 replay sets.
-
-Each set contains:
-
-- one `.osr` replay
-- one matching `.osu` beatmap
-
-Main outputs:
-
-- Each replay result
-- OSR Miss Total
-- Analyzer Miss Total
-- Difference
-- Average Analyzer Miss
-- Player Profile
-- Beatmap Exposure
-- Normalized Skill Profile
-- Analyzer Miss / Error breakdown
-- Strengths TOP3
-- Challenge candidates
-
-Each Replay row can be reset individually. `Reset all` clears all 5 sets and the generated Player Profile.
+---
 
 ## Player Profile
 
-Player Profile summarizes tendencies from multiple replay results.
+本ツールでは複数譜面の結果を統合し、
 
-Current profile metrics:
+* 強みTOP3
+* 課題候補
+* 指別エラー割合
+* 譜面適性
+* 総合傾向
 
-- LN aptitude
-- Jack aptitude
-- Left-hand aptitude
-- Right-hand aptitude
-- High-density tolerance
-- Late stamina
-- Finger error rate
-- Left/right balance
-- Overall profile comments
+を自動生成します。
 
-The profile uses normalized indicators that consider beatmap characteristics. For example, LN errors on LN-heavy beatmaps are treated differently from LN errors on tap-heavy beatmaps.
+単一譜面の結果ではなく、複数譜面の傾向からプレイヤー特性を分析することを目的としています。
 
-## Known Limitations
+---
 
-- Analyzer Miss is not the official osu! Miss count.
-- Results may not perfectly match osu! client judgement.
-- LN judgement includes estimation.
-- Mod support is limited in v1.0.0.
-- Replays with HT / EZ / DT / HR may produce shifted or less reliable evaluations.
-- Some beatmaps may produce a large automatic offset correction.
-- Beatmap feature analysis is approximate.
-- Recommended maps are frozen for v1.0.0.
-- CSV import and external log analysis are hidden from the normal v1.0.0 UI.
-- Real-time input logging is not exposed in the normal v1.0.0 UI.
+## 対応状況
 
-## Roadmap
+### v1.0.0
 
-- v1.0: Replay file analysis
-- v1.1: 10 replay batch analysis
-- v1.2: Mod-aware analysis
-- v1.3: Input log / real-time mode
-- v1.4: CSV / external log import
+* Replay Analyzer実装
+* Player Profile実装
+* Normalized Skill Profile実装
+* 指別分析実装
+* LN適性分析実装
+* Jack適性分析実装
+* 複数譜面統合分析実装
 
-## v1.0.0 Release Info
+---
 
-- App name: osu!mania Skill Analyzer
-- Package name: osu-mania-skill-analyzer
-- Version: 1.0.0
-- Platform: Windows
-- Distribution format: portable `.exe`
-- Release artifact: `dist/osu-mania-skill-analyzer-v1.0.0-win-x64-portable.exe`
+## 今後のアップデート予定
 
-## Developer Notes
+### v1.1
 
-`node_modules/`, `dist/`, `tools/`, and `work/` are intentionally ignored by Git.
+* MOD対応改善
+* Analyzer Miss精度改善
+* 解析結果表示改善
 
-For GitHub Releases, upload the generated portable exe from `dist/`. Do not commit `dist/` to the repository.
+### v1.2
+
+* 譜面特性分析強化
+* プロファイル判定精度向上
+
+### v1.3以降
+
+* 上位プレイヤーデータとの比較研究
+* 評価アルゴリズム改善
+* 新指標追加
+
+---
+
+## 注意事項
+
+本ツールは練習支援および傾向分析を目的としています。
+
+Analyzer Missは独自推定値であり、osu!公式Miss数と完全一致することは保証されません。
+
+分析結果は参考情報として利用してください。
+
+---
+
+## 開発
+
+開発者: Ruikosan
+
+開発支援:
+
+* ChatGPT
+* OpenAI Codex
+
+AI支援を活用しながら設計・実装・検証を行っています。
+
+---
+
+## License
+
+MIT License
