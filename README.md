@@ -1,5 +1,8 @@
 # osu!mania Skill Analyzer v1.0.0
 
+🌐 Supports Japanese and English UI
+This application supports both Japanese and English user interfaces.
+
 osu!maniaのリプレイ（.osr）と譜面ファイル（.osu）を解析し、プレイヤーの入力傾向・ミス傾向・譜面適性を可視化する分析ツールです。
 
 公式のスコアやPPだけでは分からない、
