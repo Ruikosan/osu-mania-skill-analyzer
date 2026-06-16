@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>osu!mania Skill Analyzer</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="fileProtocolNotice" class="protocol-notice" hidden>
+      <strong>ローカルHTTPで開いてください</strong>
+      <span>このアプリはJavaScript modulesを使用します。file://では正常に動かない場合があります。start-local.bat または start-local.ps1 を使い、http://127.0.0.1:8765 で開いてください。</span>
+    </div>
+
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">osu!mania</p>
+        <h1 data-i18n="appTitle">osu!mania Skill Analyzer</h1>
+        <p class="app-description" data-i18n="appDescription">このツールはosu!maniaのリプレイと譜面を解析し、レーン別・キー別・指別のミス傾向を可視化する練習支援ツールです。v1.0.0</p>
+      </div>
+      <div class="header-actions">
+        <button class="toggle-button" id="languageButton" type="button">English</button>
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <aside class="settings-panel" aria-labelledby="settingsHeading">
+        <div class="panel-heading">
+          <h2 id="settingsHeading" data-i18n="settings">設定</h2>
+          <button id="resetSettingsButton" type="button" class="text-button" data-i18n="reset">リセット</button>
+        </div>
+
+        <div class="field-grid">
+          <label class="field">
+            <span data-i18n="laneCount">レーン数</span>
+            <select id="laneCountSelect"></select>
+          </label>
+          <label class="field">
+            <span data-i18n="timingWindow">判定幅 (ms)</span>
+            <input id="timingWindowInput" type="number" min="10" max="250" step="5" />
+          </label>
+          <label class="field">
+            <span data-i18n="preNoteIgnoreMargin">開始前除外 (ms)</span>
+            <input id="preNoteIgnoreMarginInput" type="number" min="0" max="5000" step="50" />
+          </label>
+          <label class="field">
+            <span data-i18n="postNoteIgnoreMargin">終了後除外 (ms)</span>
+            <input id="postNoteIgnoreMarginInput" type="number" min="0" max="10000" step="50" />
+          </label>
+        </div>
+
+        <section class="settings-section" aria-labelledby="bindingsHeading">
+          <div class="section-row">
+            <h3 id="bindingsHeading" data-i18n="keyBindings">キー配置</h3>
+            <button id="applyPresetButton" type="button" class="text-button" data-i18n="applyPreset">標準配置</button>
+          </div>
+          <div id="bindingEditor" class="lane-editor"></div>
+        </section>
+
+        <section class="settings-section" aria-labelledby="fingerHeading">
+          <h3 id="fingerHeading" data-i18n="fingerMap">指割り当て</h3>
+          <div id="fingerEditor" class="lane-editor"></div>
+        </section>
+      </aside>
+
+      <section class="workspace" aria-labelledby="replayFilesHeading">
+        <details class="metadata-box developer-tools-box">
+          <summary>Developer Tools</summary>
+          <section class="developer-csv-section" aria-labelledby="uploadHeading" hidden>
+          <div class="upload-band">
+            <div>
+              <h2 id="uploadHeading" data-i18n="csvUpload">CSVアップロード</h2>
+              <p data-i18n="csvHelp">time_ms,lane,event_type 形式のCSVを読み込んでください。</p>
+            </div>
+            <label class="file-picker">
+              <input id="csvFileInput" type="file" accept=".csv,text/csv" />
+              <span data-i18n="chooseFile">ファイル選択</span>
+            </label>
+            <button class="text-button" id="loadSampleButton" type="button" data-i18n-title="loadSampleTitle" title="Load sample CSV">CSV</button>
+          </div>
+  
+          <label class="field csv-field">
+            <span data-i18n="csvText">CSV内容</span>
+            <textarea id="csvTextArea" spellcheck="false"></textarea>
+          </label>
+          </section>
+
+          <section class="input-log-section" aria-labelledby="inputLogHeading" hidden>
+            <div class="section-row">
+              <div>
+                <h2 id="inputLogHeading" data-i18n="inputLog">入力ログ (開発用)</h2>
+                <p data-i18n="inputLogHelp">アプリにフォーカスがある状態で、設定済みキーのkeydown / keyupを記録します。通常のリプレイ解析では使用しません。</p>
+              </div>
+              <span id="inputLogStatus" class="summary-badge">待機中</span>
+            </div>
+            <div id="inputCaptureArea" class="input-capture-area" tabindex="0">
+              <strong data-i18n="inputCaptureTitle">キー入力エリア</strong>
+              <span data-i18n="inputCaptureHelp">記録開始後にここをクリックして、現在のキー配置で入力してください。</span>
+            </div>
+            <div class="input-log-actions">
+              <button id="inputRecordButton" type="button" class="primary-button" data-i18n="startRecording">記録開始</button>
+              <button id="inputClearButton" type="button" class="text-button" data-i18n="clearLog">クリア</button>
+              <button id="inputUseCsvButton" type="button" class="text-button" data-i18n="useLogAsCsv">CSV欄へ反映</button>
+              <button id="inputExportButton" type="button" class="text-button" data-i18n="exportCsv">CSV保存</button>
+            </div>
+            <div class="input-log-summary">
+              <span><span data-i18n="recordedInputs">記録入力数</span>: <strong id="inputLogCount">0</strong></span>
+              <span><span data-i18n="recordingTime">記録時間</span>: <strong id="inputLogTime">0:00.000</strong></span>
+            </div>
+            <div id="inputLogTable" class="input-log-table"></div>
+          </section>
+
+          <details class="metadata-box replay-debug-box">
+            <summary id="replayDebugHeading">Replay debug</summary>
+            <div id="replayDebug" class="replay-debug"></div>
+          </details>
+          <details class="metadata-box replay-debug-box">
+            <summary id="analysisDebugHeading">Analysis debug</summary>
+            <div id="analysisDebug" class="replay-debug"></div>
+          </details>
+        </details>
+
+        <section class="file-section" aria-labelledby="replayFilesHeading">
+          <div>
+            <h2 id="replayFilesHeading" data-i18n="replayFiles">リプレイ / 譜面</h2>
+            <p data-i18n="replayFilesHelp">.osrと.osuを読み込み、リプレイ入力と譜面ノーツを照合してミス傾向を分析します。</p>
+            <p class="tool-notice" data-i18n="analysisNotice">Analyzer Missはosu!公式Missではなく、ツールが推定したMiss/エラー傾向です。OSR Missと完全一致しない場合があります。v1.0ではMod補正は限定的です。HT/EZ/DTなどを含むリプレイでは評価がずれる場合があります。</p>
+          </div>
+          <section class="multi-analysis-section" aria-labelledby="multiAnalysisHeading">
+            <div class="section-row">
+              <div>
+                <h3 id="multiAnalysisHeading" data-i18n="multiAnalysis">複数リプレイ解析</h3>
+                <p data-i18n="multiAnalysisHelp">最大5セットの.osrと対応する.osuを個別解析し、結果一覧とPlayer Profileを表示します。</p>
+              </div>
+              <button id="multiAnalyzeButton" type="button" class="primary-button" data-i18n="multiAnalyze">複数解析</button>
+            </div>
+            <div id="multiSetList" class="multi-set-list">
+              <div class="multi-set-row" data-multi-row="0">
+                <strong>Replay #1</strong>
+                <label class="field"><span>.osr</span><input data-multi-index="0" data-multi-kind="osr" type="file" accept=".osr" /><span class="multi-file-name" data-multi-index="0" data-multi-kind="osr">No file selected</span></label>
+                <label class="field"><span>.osu</span><input data-multi-index="0" data-multi-kind="osu" type="file" accept=".osu" /><span class="multi-file-name" data-multi-index="0" data-multi-kind="osu">No file selected</span></label>
+                <button class="text-button multi-reset-button" type="button" data-multi-reset-index="0" data-i18n="multiResetSet">Reset</button>
+              </div>
+              <div class="multi-set-row" data-multi-row="1">
+                <strong>Replay #2</strong>
+                <label class="field"><span>.osr</span><input data-multi-index="1" data-multi-kind="osr" type="file" accept=".osr" /><span class="multi-file-name" data-multi-index="1" data-multi-kind="osr">No file selected</span></label>
+                <label class="field"><span>.osu</span><input data-multi-index="1" data-multi-kind="osu" type="file" accept=".osu" /><span class="multi-file-name" data-multi-index="1" data-multi-kind="osu">No file selected</span></label>
+                <button class="text-button multi-reset-button" type="button" data-multi-reset-index="1" data-i18n="multiResetSet">Reset</button>
+              </div>
+              <div class="multi-set-row" data-multi-row="2">
+                <strong>Replay #3</strong>
+                <label class="field"><span>.osr</span><input data-multi-index="2" data-multi-kind="osr" type="file" accept=".osr" /><span class="multi-file-name" data-multi-index="2" data-multi-kind="osr">No file selected</span></label>
+                <label class="field"><span>.osu</span><input data-multi-index="2" data-multi-kind="osu" type="file" accept=".osu" /><span class="multi-file-name" data-multi-index="2" data-multi-kind="osu">No file selected</span></label>
+                <button class="text-button multi-reset-button" type="button" data-multi-reset-index="2" data-i18n="multiResetSet">Reset</button>
+              </div>
+              <div class="multi-set-row" data-multi-row="3">
+                <strong>Replay #4</strong>
+                <label class="field"><span>.osr</span><input data-multi-index="3" data-multi-kind="osr" type="file" accept=".osr" /><span class="multi-file-name" data-multi-index="3" data-multi-kind="osr">No file selected</span></label>
+                <label class="field"><span>.osu</span><input data-multi-index="3" data-multi-kind="osu" type="file" accept=".osu" /><span class="multi-file-name" data-multi-index="3" data-multi-kind="osu">No file selected</span></label>
+                <button class="text-button multi-reset-button" type="button" data-multi-reset-index="3" data-i18n="multiResetSet">Reset</button>
+              </div>
+              <div class="multi-set-row" data-multi-row="4">
+                <strong>Replay #5</strong>
+                <label class="field"><span>.osr</span><input data-multi-index="4" data-multi-kind="osr" type="file" accept=".osr" /><span class="multi-file-name" data-multi-index="4" data-multi-kind="osr">No file selected</span></label>
+                <label class="field"><span>.osu</span><input data-multi-index="4" data-multi-kind="osu" type="file" accept=".osu" /><span class="multi-file-name" data-multi-index="4" data-multi-kind="osu">No file selected</span></label>
+                <button class="text-button multi-reset-button" type="button" data-multi-reset-index="4" data-i18n="multiResetSet">Reset</button>
+              </div>
+            </div>
+            <div class="multi-actions">
+              <button id="multiResetAllButton" type="button" class="text-button" data-i18n="multiResetAll">Reset all</button>
+            </div>
+            <p id="multiStatus" class="status-text" role="status"></p>
+            <div class="multi-output-grid">
+              <section class="metadata-box">
+                <h4>各リプレイ結果</h4>
+                <div id="multiResults" class="multi-results"></div>
+              </section>
+              <section class="metadata-box">
+                <h4>Player Profile</h4>
+                <div id="playerProfile" class="profile-grid"></div>
+              </section>
+            </div>
+          </section>
+          <div class="file-grid">
+            <label class="field">
+              <span data-i18n="osrFile">.osrリプレイ</span>
+              <input id="osrFileInput" type="file" accept=".osr" />
+            </label>
+            <label class="field">
+              <span data-i18n="beatmapFile">.osu譜面</span>
+              <input id="beatmapFileInput" type="file" accept=".osu" />
+            </label>
+          </div>
+          <div class="metadata-grid">
+            <section class="metadata-box" aria-labelledby="replayMetadataHeading">
+              <h3 id="replayMetadataHeading" data-i18n="replayMetadata">リプレイ情報</h3>
+              <div id="osrMetadata" class="metadata-list"></div>
+            </section>
+            <section class="metadata-box" aria-labelledby="beatmapMetadataHeading">
+              <h3 id="beatmapMetadataHeading" data-i18n="beatmapMetadata">譜面情報</h3>
+              <div id="beatmapMetadata" class="metadata-list"></div>
+            </section>
+          </div>
+        </section>
+
+        <div class="analysis-actions">
+          <button id="analyzeButton" type="button" class="primary-button" data-i18n="analyze">解析する</button>
+          <button id="singleResetButton" type="button" class="text-button" data-i18n="resetSingleAnalysis">Reset analysis</button>
+          <p id="statusText" class="status-text" role="status"></p>
+        </div>
+
+        <section class="results" aria-labelledby="resultsHeading">
+          <div class="results-heading">
+            <h2 id="resultsHeading" data-i18n="results">解析結果</h2>
+            <span id="summaryBadge" class="summary-badge">0</span>
+          </div>
+
+          <div class="metrics-grid">
+            <div class="metric-box">
+              <span data-i18n="totalMistakes">総ミス数</span>
+              <strong id="totalMistakes">0</strong>
+            </div>
+            <div class="metric-box">
+              <span data-i18n="hitCount">Hit数</span>
+              <strong id="hitCount">0</strong>
+            </div>
+            <div class="metric-box">
+              <span data-i18n="noteCount">ノーツ数</span>
+              <strong id="noteCount">0</strong>
+            </div>
+            <div class="metric-box">
+              <span data-i18n="inputCount">入力数</span>
+              <strong id="inputCount">0</strong>
+            </div>
+          </div>
+
+          <section class="comparison-section" aria-labelledby="comparisonHeading">
+            <h3 id="comparisonHeading" data-i18n="osrComparison">OSR比較</h3>
+            <div id="osrComparison" class="comparison-panel"></div>
+          </section>
+
+          <div class="result-layout">
+            <section class="result-section" aria-labelledby="typeHeading">
+              <h3 id="typeHeading" data-i18n="byType">ミス種類別</h3>
+              <div id="typeBars" class="bar-list"></div>
+            </section>
+
+            <section class="result-section" aria-labelledby="laneHeading">
+              <h3 id="laneHeading" data-i18n="byLane">レーン別ミス</h3>
+              <div id="laneTable" class="table-like"></div>
+            </section>
+
+            <section class="result-section" aria-labelledby="keyHeading">
+              <h3 id="keyHeading" data-i18n="byKey">キー別ミス</h3>
+              <div id="keyTable" class="table-like"></div>
+            </section>
+
+            <section class="result-section" aria-labelledby="fingerResultHeading">
+              <h3 id="fingerResultHeading" data-i18n="byFinger">指別ミス</h3>
+              <div id="fingerTable" class="table-like"></div>
+            </section>
+          </div>
+
+          <section class="timeline-section" aria-labelledby="timelineHeading">
+            <h3 id="timelineHeading" data-i18n="timeline">タイムライン</h3>
+            <div id="timeline" class="timeline"></div>
+          </section>
+
+          <section class="playback-section" aria-labelledby="playbackHeading">
+            <div class="section-row">
+              <h3 id="playbackHeading" data-i18n="replayPlayback">リプレイ再生</h3>
+              <button id="playbackButton" type="button" class="text-button" data-i18n="play">再生</button>
+            </div>
+            <label class="field">
+              <span data-i18n="playbackTime">再生位置</span>
+              <input id="playbackRange" type="range" min="0" max="0" value="0" />
+            </label>
+            <div class="playback-readout">
+              <strong id="playbackCurrentTime">0ms</strong>
+              <span id="playbackNextMistake"></span>
+            </div>
+            <div>
+              <h4 data-i18n="activeMistakes">発生中のミス</h4>
+              <div id="activeMistakes" class="active-mistakes"></div>
+            </div>
+          </section>
+
+          <section class="advice-section" aria-labelledby="adviceHeading">
+            <h3 id="adviceHeading" data-i18n="advice">練習アドバイス</h3>
+            <ul id="adviceList" class="advice-list"></ul>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <script>
+      if (window.location.protocol === "file:" && !window.desktopRuntime?.isElectron) {
+        document.getElementById("fileProtocolNotice").hidden = false;
+      }
+    </script>
+    <script src="./vendor/lzma/lzma_worker.js"></script>
+    <script type="module" src="./src/ui/app.js?v=v1-ui-cleanup"></script>
+  </body>
+</html>

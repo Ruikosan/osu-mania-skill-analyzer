@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "categories": {
+    "general": [
+      {
+        "title": "General 7K practice search",
+        "artist": "osu! beatmap search",
+        "difficulty": "7K practice",
+        "url": "https://osu.ppy.sh/beatmapsets?m=3&q=7k%20practice",
+        "reason_ja": "大きな偏りがまだ強く出ていないため、総合練習向けの7K譜面から確認できます。",
+        "reason_en": "No single weakness is dominant yet, so general 7K practice maps are a good next step.",
+        "tags": ["balanced", "accuracy"],
+        "features": {
+          "target": "balanced"
+        }
+      }
+    ],
+    "left_hand_weak": [
+      {
+        "title": "Left-hand density practice search",
+        "artist": "osu! beatmap search",
+        "difficulty": "Left hand",
+        "url": "https://osu.ppy.sh/beatmapsets?m=3&q=7k%20left%20hand%20density",
+        "reason_ja": "左手ミス率が高いため、左手側の密度や独立性を練習しやすい譜面候補を探せます。",
+        "reason_en": "Your left-hand miss rate is high, so these candidates focus on left-hand density and independence.",
+        "tags": ["left_hand_heavy", "high_density"],
+        "features": {
+          "handBias": "left"
+        }
+      }
+    ],
+    "right_hand_weak": [
+      {
+        "title": "Right-hand density practice search",
+        "artist": "osu! beatmap search",
+        "difficulty": "Right hand",
+        "url": "https://osu.ppy.sh/beatmapsets?m=3&q=7k%20right%20hand%20density",
+        "reason_ja": "右手ミス率が高いため、右手側の密度や独立性を練習しやすい譜面候補を探せます。",
+        "reason_en": "Your right-hand miss rate is high, so these candidates focus on right-hand density and independence.",
+        "tags": ["right_hand_heavy", "high_density"],
+        "features": {
+          "handBias": "right"
+        }
+      }
+    ],
+    "jack_weak": [
+      {
+        "title": "Jack control practice search",
+        "artist": "osu! beatmap search",
+        "difficulty": "Jack",
+        "url": "https://osu.ppy.sh/beatmapsets?m=3&q=7k%20jack",
+        "reason_ja": "押しすぎやTapミスが目立つため、ジャックや同一レーン連打の制御練習に向いています。",
+        "reason_en": "Extra presses or tap misses stand out, so jack and same-lane control practice should help.",
+        "tags": ["jack_heavy"],
+        "features": {
+          "jackRate": "high"
+        }
+      }
+    ],
+    "ln_weak": [
+      {
+        "title": "LN release practice search",
+        "artist": "osu! beatmap search",
+        "difficulty": "LN",
+        "url": "https://osu.ppy.sh/beatmapsets?m=3&q=7k%20long%20note",
+        "reason_ja": "LN関連ミスが多いため、LNの押し始め・保持・離し精度を鍛えやすい譜面候補です。",
+        "reason_en": "LN-related mistakes are common, so these candidates help practice LN starts, holds, and releases.",
+        "tags": ["ln_heavy"],
+        "features": {
+          "lnRate": "high"
+        }
+      }
+    ],
+    "stamina_weak": [
+      {
+        "title": "Stamina consistency practice search",
+        "artist": "osu! beatmap search",
+        "difficulty": "Stamina",
+        "url": "https://osu.ppy.sh/beatmapsets?m=3&q=7k%20stamina",
+        "reason_ja": "後半のミスが多いため、長めの譜面や持久力・集中維持の練習に向いています。",
+        "reason_en": "Late-song mistakes are high, so longer stamina and consistency maps should help.",
+        "tags": ["stamina", "late_density", "high_density"],
+        "features": {
+          "lateDensity": "high"
+        }
+      }
+    ],
+    "accuracy_weak": [
+      {
+        "title": "Timing accuracy practice search",
+        "artist": "osu! beatmap search",
+        "difficulty": "Accuracy",
+        "url": "https://osu.ppy.sh/beatmapsets?m=3&q=7k%20accuracy",
+        "reason_ja": "早押し・遅押しが多いため、精度重視でタイミングを整えやすい譜面候補です。",
+        "reason_en": "Early/late presses are common, so accuracy-focused maps should help stabilize timing.",
+        "tags": ["accuracy", "balanced"],
+        "features": {
+          "timingFocus": true
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "name": "osu-mania-skill-analyzer",
+  "version": "1.0.0",
+  "private": false,
+  "description": "osu!mania replay file analyzer and player profile tool.",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win portable",
+    "dist": "electron-builder"
+  },
+  "author": "ansas",
+  "license": "MIT",
+  "build": {
+    "appId": "com.ansas.osuManiaSkillAnalyzer",
+    "productName": "osu!mania Skill Analyzer",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "outputs/**/*",
+      "package.json",
+      "!outputs/README.md",
+      "!outputs/sample.csv",
+      "!outputs/sample.osu",
+      "!outputs/start-local.*"
+    ],
+    "win": {
+      "signAndEditExecutable": false,
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "portable": {
+      "artifactName": "osu-mania-skill-analyzer-v${version}-win-${arch}-portable.exe"
+    }
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  }
+}
