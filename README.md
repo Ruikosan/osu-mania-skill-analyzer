@@ -41,27 +41,23 @@ osu!maniaのリプレイ（.osr）と譜面ファイル（.osu）を解析し、
 
 ## Player Profile
 
-### Player Profile Screenshot
-
-??????????????????Player Profile?????
-????????LN/Jack????????????????????????????????
-
-<img src="docs/player-profile-1.png" width="700">
-
-<img src="docs/player-profile-2.png" width="700">
-
 本ツールでは複数譜面の結果を統合し、
 
-* 強みTOP3
+* 強みTOP3                                          <img src="docs/player-profile-1.png" width="35%">                                                    
 * 課題候補
 * 指別エラー割合
-* 譜面適性
+* 譜面適性                                           <img src="docs/player-profile-2.png" width="35%">
 * 総合傾向
 
 を自動生成します。
 
 単一譜面の結果ではなく、複数譜面の傾向からプレイヤー特性を分析することを目的としています。
 
+### Player Profile Screenshot
+
+<img src="docs/player-profile-1.png" width="35%">
+
+<img src="docs/player-profile-2.png" width="35%">
 ---
 
 ## 対応状況
