@@ -43,10 +43,10 @@ osu!maniaのリプレイ（.osr）と譜面ファイル（.osu）を解析し、
 
 本ツールでは複数譜面の結果を統合し、
 
-* 強みTOP3                                          <img src="docs/player-profile-1.png" width="35%">                                                    
+* 強みTOP3                                                                                              
 * 課題候補
 * 指別エラー割合
-* 譜面適性                                           <img src="docs/player-profile-2.png" width="35%">
+* 譜面適性                                           
 * 総合傾向
 
 を自動生成します。
@@ -55,9 +55,9 @@ osu!maniaのリプレイ（.osr）と譜面ファイル（.osu）を解析し、
 
 ### Player Profile Screenshot
 
-<img src="docs/player-profile-1.png" width="35%">
+<img src="docs/player-profile-1.png" width="45%">
 
-<img src="docs/player-profile-2.png" width="35%">
+<img src="docs/player-profile-2.png" width="45%">
 ---
 
 ## 対応状況
